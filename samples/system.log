@@ -1,0 +1,29 @@
+========================================
+  SYSTEM / SECURITY LOG — INFRA NODE 3
+  Date: 2026-03-10 | Host: node3.prod
+========================================
+
+Mar 10 06:00:01 node3 sshd[1234]: Accepted password for root from 198.51.100.42 port 22
+Mar 10 06:00:15 node3 sshd[1235]: Failed password for admin from 198.51.100.42 port 22
+Mar 10 06:00:18 node3 sshd[1236]: Failed password for admin from 198.51.100.42 port 22
+Mar 10 06:00:21 node3 sshd[1237]: Failed password for admin from 198.51.100.42 port 22
+Mar 10 06:00:24 node3 sshd[1238]: Failed password for admin from 198.51.100.42 port 22
+Mar 10 06:00:27 node3 sshd[1239]: Failed password for root from 103.21.244.0 port 22
+Mar 10 06:00:30 node3 sshd[1240]: Failed password for root from 103.21.244.0 port 22
+
+Mar 10 07:15:00 node3 cron[5001]: Running backup script as root
+Mar 10 07:15:01 node3 backup[5002]: Using aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Mar 10 07:15:01 node3 backup[5002]: aws_access_key_id=AKIAIOSFODNN7EXAMPLE
+Mar 10 07:15:02 node3 backup[5002]: Uploading to s3://prod-backup-bucket
+
+Mar 10 08:45:33 node3 kernel: oom-killer invoked, victim PID=9823
+Mar 10 08:45:34 node3 kernel: StackTrace dumped to /var/log/oom_dump.txt
+Mar 10 08:45:35 node3 kernel: Exception in thread main java.lang.OutOfMemoryError: Java heap space
+
+Mar 10 09:00:00 node3 nginx[200]: 203.0.113.99 GET /admin/config HTTP/1.1 200
+Mar 10 09:00:01 node3 nginx[201]: Response included: db_password=Prod@SQL2026! in JSON body
+Mar 10 09:00:02 node3 nginx[202]: 203.0.113.99 POST /api/token HTTP/1.1 200
+
+Mar 10 10:30:00 node3 app[3000]: User devops@internal.com logged from 172.16.0.5
+Mar 10 10:30:01 node3 app[3001]: Env dump: SECRET_KEY=django-insecure-k#8mP!2xQzAbCdEfGh
+Mar 10 10:30:02 node3 app[3002]: JWT_SECRET=super_jwt_secret_do_not_share_2026

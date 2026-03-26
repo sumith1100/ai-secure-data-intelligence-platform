@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Secure Data Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #080c10;
+    --surface: #0e1318;
+    --surface2: #141b22;
+    --border: #1e2d3d;
+    --accent: #00d4ff;
+    --accent2: #ff4d6d;
+    --accent3: #39ff14;
+    --warn: #ffb300;
+    --text: #c8d6e5;
+    --text-dim: #5a7a9a;
+    --critical: #ff1744;
+    --high: #ff6d00;
+    --medium: #ffb300;
+    --low: #00e676;
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Scanline overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,255,0.015) 2px, rgba(0,212,255,0.015) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    background: rgba(8,12,16,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    border: 2px solid var(--accent);
+    position: relative;
+    display: grid;
+    place-items: center;
+    animation: pulse-border 3s ease-in-out infinite;
+  }
+  .logo-mark::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background: var(--accent);
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  }
+  @keyframes pulse-border {
+    0%,100% { box-shadow: 0 0 0 0 rgba(0,212,255,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(0,212,255,0); }
+  }
+
+  header h1 {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  header h1 span { color: var(--accent); }
+
+  .header-badges {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+  .badge {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid;
+    font-family: var(--font-mono);
+  }
+  .badge.gateway { border-color: var(--accent); color: var(--accent); }
+  .badge.scanner { border-color: var(--accent2); color: var(--accent2); }
+  .badge.analyzer { border-color: var(--accent3); color: var(--accent3); }
+  .badge.risk { border-color: var(--warn); color: var(--warn); }
+
+  /* ── Layout ── */
+  .app { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 73px); }
+
+  /* ── Sidebar ── */
+  aside {
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    background: var(--surface);
+  }
+
+  .sidebar-section {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .sidebar-section:last-child { border-bottom: none; }
+
+  .sidebar-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+  }
+
+  /* Input type tabs */
+  .input-type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .input-type-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 8px 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .input-type-btn:hover, .input-type-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,212,255,0.06);
+  }
+  .input-type-btn.active { box-shadow: 0 0 12px rgba(0,212,255,0.15); }
+
+  /* Options */
+  .option-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 11px;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .toggle {
+    width: 32px; height: 16px;
+    background: var(--border);
+    border-radius: 8px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle.on { background: var(--accent); }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 12px; height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    top: 2px; left: 2px;
+    transition: left 0.2s;
+  }
+  .toggle.on::after { left: 18px; }
+
+  /* Risk summary widget */
+  .risk-meter {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 14px;
+    margin-top: 8px;
+  }
+  .risk-bar-wrap { height: 6px; background: var(--border); margin: 8px 0 4px; }
+  .risk-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--low), var(--medium), var(--high), var(--critical));
+    width: 0%;
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  }
+  .risk-score-big {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+  }
+  .risk-level-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
+
+  /* ── Main area ── */
+  main { padding: 24px 32px; display: flex; flex-direction: column; gap: 24px; }
+
+  /* Input panel */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-title {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    flex: 1;
+  }
+  .step-num {
+    width: 22px; height: 22px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 10px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  /* Text area */
+  .text-input-area {
+    width: 100%;
+    min-height: 140px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 18px 20px;
+    resize: vertical;
+    line-height: 1.7;
+  }
+  .text-input-area::placeholder { color: var(--text-dim); }
+
+  /* File drop zone */
+  .drop-zone {
+    margin: 16px 20px;
+    border: 2px dashed var(--border);
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: none;
+    position: relative;
+  }
+  .drop-zone.active-zone { display: block; }
+  .drop-zone:hover, .drop-zone.dragging {
+    border-color: var(--accent);
+    background: rgba(0,212,255,0.04);
+  }
+  .drop-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .drop-icon { font-size: 28px; margin-bottom: 10px; }
+  .drop-text { font-size: 12px; color: var(--text-dim); }
+  .drop-text strong { color: var(--accent); }
+
+  /* SQL input */
+  .sql-input {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent3);
+    background: #060c08;
+    border: none;
+    outline: none;
+    width: 100%;
+    min-height: 100px;
+    padding: 16px 20px;
+    resize: vertical;
+    display: none;
+  }
+  .sql-input.active-zone { display: block; }
+
+  /* Chat input */
+  .chat-input-wrap { padding: 16px 20px; display: none; }
+  .chat-input-wrap.active-zone { display: flex; gap: 10px; }
+  .chat-input-wrap input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .chat-input-wrap input:focus { border-color: var(--accent); }
+
+  /* Analyze button */
+  .analyze-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 13px 28px;
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    display: block;
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .analyze-btn:hover { background: #fff; box-shadow: 0 0 30px rgba(0,212,255,0.4); }
+  .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .analyze-btn .btn-shimmer {
+    position: absolute; top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer { to { left: 150%; } }
+
+  /* ── Results area ── */
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* Summary card */
+  .summary-card {
+    grid-column: 1 / -1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+    display: none;
+    animation: slideIn 0.4s ease;
+  }
+  .summary-card.visible { display: block; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .summary-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .summary-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .summary-text {
+    font-size: 13px;
+    color: #fff;
+    line-height: 1.6;
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
+
+  /* Findings list */
+  .findings-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: none;
+    animation: slideIn 0.4s ease 0.1s both;
+  }
+  .findings-panel.visible { display: block; }
+
+  .finding-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(30,45,61,0.6);
+    font-size: 11px;
+    animation: fadeIn 0.3s ease both;
+  }
+  .finding-item:last-child { border-bottom: none; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .finding-type {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .finding-value {
+    font-size: 11px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .finding-line {
+    font-size: 10px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .risk-pill {
+    padding: 2px 8px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .risk-pill.critical { background: rgba(255,23,68,0.15); color: var(--critical); border: 1px solid var(--critical); }
+  .risk-pill.high { background: rgba(255,109,0,0.15); color: var(--high); border: 1px solid var(--high); }
+  .risk-pill.medium { background: rgba(255,179,0,0.15); color: var(--medium); border: 1px solid var(--medium); }
+  .risk-pill.low { background: rgba(0,230,118,0.12); color: var(--low); border: 1px solid var(--low); }
+
+  /* Insights panel */
+  .insights-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: none;
+    animation: slideIn 0.4s ease 0.2s both;
+  }
+  .insights-panel.visible { display: block; }
+
+  .insight-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(30,45,61,0.6);
+    font-size: 11px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    line-height: 1.5;
+    animation: fadeIn 0.3s ease both;
+  }
+  .insight-item:last-child { border-bottom: none; }
+  .insight-icon { flex-shrink: 0; color: var(--accent3); margin-top: 1px; }
+
+  /* Log viewer */
+  .log-viewer {
+    grid-column: 1 / -1;
+    background: #05080a;
+    border: 1px solid var(--border);
+    display: none;
+    animation: slideIn 0.4s ease 0.3s both;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .log-viewer.visible { display: block; }
+  .log-viewer::-webkit-scrollbar { width: 4px; }
+  .log-viewer::-webkit-scrollbar-track { background: transparent; }
+  .log-viewer::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .log-line {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    line-height: 1.6;
+  }
+  .log-line-num {
+    color: var(--text-dim);
+    text-align: right;
+    padding: 2px 10px 2px 8px;
+    border-right: 1px solid var(--border);
+    user-select: none;
+    font-size: 10px;
+  }
+  .log-line-content { padding: 2px 12px; color: var(--text); }
+  .log-line.flagged-critical { background: rgba(255,23,68,0.08); }
+  .log-line.flagged-high { background: rgba(255,109,0,0.08); }
+  .log-line.flagged-medium { background: rgba(255,179,0,0.06); }
+  .log-line.flagged-low { background: rgba(0,230,118,0.04); }
+  .log-line.flagged-critical .log-line-content { color: var(--critical); }
+  .log-line.flagged-high .log-line-content { color: var(--high); }
+
+  mark.secret {
+    background: rgba(255,23,68,0.3);
+    color: var(--critical);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+  mark.sensitive {
+    background: rgba(255,109,0,0.25);
+    color: var(--high);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+  mark.email {
+    background: rgba(0,230,118,0.15);
+    color: var(--low);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+
+  /* Loading state */
+  .loading-bar {
+    height: 2px;
+    background: var(--border);
+    overflow: hidden;
+    display: none;
+  }
+  .loading-bar.running { display: block; }
+  .loading-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    width: 30%;
+    animation: loadSlide 1.2s ease-in-out infinite;
+  }
+  @keyframes loadSlide {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+  }
+
+  .status-line {
+    font-size: 10px;
+    color: var(--text-dim);
+    padding: 8px 20px;
+    letter-spacing: 0.05em;
+    border-top: 1px solid var(--border);
+    min-height: 32px;
+  }
+  .status-line.active { color: var(--accent); }
+
+  /* Flow diagram inline */
+  .flow-box {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    gap: 4px;
+  }
+  .flow-node {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    font-size: 9px;
+    padding: 4px 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    transition: all 0.3s;
+  }
+  .flow-node.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 10px rgba(0,212,255,0.2);
+  }
+  .flow-node.done {
+    border-color: var(--low);
+    color: var(--low);
+  }
+  .flow-arrow { color: var(--text-dim); font-size: 11px; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    aside { display: none; }
+    .results-grid { grid-template-columns: 1fr; }
+    header { padding: 14px 16px; }
+    .header-badges { display: none; }
+    main { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark"></div>
+  <h1>AI <span>Secure</span> Data Intelligence</h1>
+  <div class="header-badges">
+    <span class="badge gateway">AI Gateway</span>
+    <span class="badge scanner">Scanner</span>
+    <span class="badge analyzer">Log Analyzer</span>
+    <span class="badge risk">Risk Engine</span>
+  </div>
+</header>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Input Mode</div>
+      <div class="input-type-grid">
+        <button class="input-type-btn active" onclick="setMode('text')" id="btn-text">Text</button>
+        <button class="input-type-btn" onclick="setMode('file')" id="btn-file">File</button>
+        <button class="input-type-btn" onclick="setMode('log')" id="btn-log">Log</button>
+        <button class="input-type-btn" onclick="setMode('sql')" id="btn-sql">SQL</button>
+        <button class="input-type-btn" onclick="setMode('chat')" id="btn-chat" style="grid-column:1/-1">Live Chat</button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Analysis Options</div>
+      <div class="option-row" onclick="toggleOpt(this,'mask')">
+        <span>Mask sensitive data</span>
+        <div class="toggle on" id="opt-mask"></div>
+      </div>
+      <div class="option-row" onclick="toggleOpt(this,'block')">
+        <span>Block high-risk input</span>
+        <div class="toggle on" id="opt-block"></div>
+      </div>
+      <div class="option-row" onclick="toggleOpt(this,'log_analysis')">
+        <span>Log analysis engine</span>
+        <div class="toggle on" id="opt-log_analysis"></div>
+      </div>
+      <div class="option-row" onclick="toggleOpt(this,'ai_insights')">
+        <span>AI insights</span>
+        <div class="toggle on" id="opt-ai_insights"></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Risk Score</div>
+      <div class="risk-meter">
+        <div class="risk-score-big" id="sidebar-score">—</div>
+        <div class="risk-bar-wrap"><div class="risk-bar-fill" id="sidebar-bar"></div></div>
+        <div class="risk-level-label" id="sidebar-level" style="color:var(--text-dim)">Awaiting analysis</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Risk Patterns</div>
+      <div style="font-size:10px; line-height:2;">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-dim)">API key in logs</span><span style="color:var(--high)">HIGH</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-dim)">Password in logs</span><span style="color:var(--critical)">CRITICAL</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-dim)">Email in logs</span><span style="color:var(--low)">LOW</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-dim)">Stack trace</span><span style="color:var(--medium)">MEDIUM</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main>
+
+    <!-- Step 1: Input Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="step-num">1</div>
+        <div class="panel-title">Input — <span id="mode-label" style="color:var(--accent)">Text</span></div>
+        <div style="font-size:10px;color:var(--text-dim)" id="input-hint">Paste or type any content</div>
+      </div>
+
+      <!-- Text input -->
+      <textarea class="text-input-area active-zone" id="text-input"
+        placeholder="Paste text, log data, SQL queries, or any content here for analysis...
+
+Example log:
+2026-03-10 10:00:01 INFO User login email=admin@company.com
+password=admin123
+api_key=sk-prod-xyz-abc123
+ERROR stack trace: NullPointerException at service.java:45"></textarea>
+
+      <!-- File drop zone -->
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" accept=".log,.txt,.pdf,.doc" id="file-input" onchange="handleFileSelect(this)"/>
+        <div class="drop-icon">📂</div>
+        <div class="drop-text"><strong>Drop file here</strong> or click to browse<br/>Supports: .log .txt .pdf .doc</div>
+        <div id="file-name" style="font-size:11px;color:var(--accent);margin-top:10px;"></div>
+      </div>
+
+      <!-- SQL input -->
+      <textarea class="sql-input" id="sql-input"
+        placeholder="SELECT user_id, password_hash, api_token FROM users WHERE email='admin@corp.com';"
+      ></textarea>
+
+      <!-- Chat input -->
+      <div class="chat-input-wrap" id="chat-wrap">
+        <input type="text" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')analyzeNow()"/>
+      </div>
+
+      <!-- Processing flow indicators -->
+      <div class="flow-box" id="flow-box">
+        <span class="flow-node" id="fn-input">Input</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node" id="fn-validate">Validate</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node" id="fn-extract">Extract</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node" id="fn-detect">Detect</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node" id="fn-risk">Risk Engine</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node" id="fn-policy">Policy</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node" id="fn-response">Response</span>
+      </div>
+
+      <div class="loading-bar" id="loading-bar"><div class="loading-bar-fill"></div></div>
+      <div class="status-line" id="status-line">Ready — enter content and click Analyze</div>
+
+      <button class="analyze-btn" id="analyze-btn" onclick="analyzeNow()">
+        <span class="btn-shimmer"></span>
+        ⚡ Analyze Now
+      </button>
+    </div>
+
+    <!-- Results -->
+    <div class="results-grid" id="results-grid">
+
+      <!-- Summary card -->
+      <div class="summary-card" id="summary-card">
+        <div class="summary-label">AI Summary</div>
+        <div class="summary-text" id="summary-text"></div>
+        <div style="margin-top:12px;display:flex;gap:20px;font-size:10px;color:var(--text-dim)" id="meta-row"></div>
+      </div>
+
+      <!-- Findings panel -->
+      <div class="findings-panel" id="findings-panel">
+        <div class="panel-header">
+          <div class="step-num" style="border-color:var(--accent2);color:var(--accent2)">2</div>
+          <div class="panel-title">Detections</div>
+          <span id="finding-count" style="font-size:10px;color:var(--text-dim)">0 issues</span>
+        </div>
+        <div id="findings-list"></div>
+      </div>
+
+      <!-- Insights panel -->
+      <div class="insights-panel" id="insights-panel">
+        <div class="panel-header">
+          <div class="step-num" style="border-color:var(--accent3);color:var(--accent3)">3</div>
+          <div class="panel-title">AI Insights</div>
+        </div>
+        <div id="insights-list"></div>
+      </div>
+
+      <!-- Log viewer -->
+      <div class="log-viewer" id="log-viewer">
+        <div class="panel-header">
+          <div class="step-num" style="border-color:var(--warn);color:var(--warn)">4</div>
+          <div class="panel-title">Log Viewer — <span style="color:var(--warn)">highlighted risks</span></div>
+        </div>
+        <div id="log-lines"></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+// ─── State ──────────────────────────────────────
+let currentMode = 'text';
+let options = { mask: true, block: true, log_analysis: true, ai_insights: true };
+let fileContent = '';
+
+// ─── Mode switching ──────────────────────────────
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.input-type-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-'+mode).classList.add('active');
+
+  // hide all zone types
+  document.getElementById('text-input').classList.remove('active-zone');
+  document.getElementById('drop-zone').classList.remove('active-zone');
+  document.getElementById('sql-input').classList.remove('active-zone');
+  document.getElementById('chat-wrap').classList.remove('active-zone');
+
+  const labels = { text:'Text', file:'File / PDF', log:'Log File', sql:'SQL Query', chat:'Live Chat' };
+  const hints = {
+    text:'Paste any text content',
+    file:'Upload .log .txt .pdf .doc files',
+    log:'Upload or paste a .log file',
+    sql:'Enter a SQL query to scan',
+    chat:'Type a message to analyze'
+  };
+  document.getElementById('mode-label').textContent = labels[mode];
+  document.getElementById('input-hint').textContent = hints[mode];
+
+  if (mode === 'file' || mode === 'log') {
+    document.getElementById('drop-zone').classList.add('active-zone');
+    if (mode === 'log') {
+      document.getElementById('text-input').classList.add('active-zone');
+      document.getElementById('text-input').style.minHeight = '100px';
+    }
+  } else if (mode === 'sql') {
+    document.getElementById('sql-input').classList.add('active-zone');
+  } else if (mode === 'chat') {
+    document.getElementById('chat-wrap').classList.add('active-zone');
+  } else {
+    document.getElementById('text-input').classList.add('active-zone');
+  }
+}
+
+// ─── Options toggle ──────────────────────────────
+function toggleOpt(row, key) {
+  options[key] = !options[key];
+  const el = document.getElementById('opt-'+key);
+  el.classList.toggle('on', options[key]);
+}
+
+// ─── File handling ────────────────────────────────
+const dropZone = document.getElementById('drop-zone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragging'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragging'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('dragging');
+  const f = e.dataTransfer.files[0];
+  if (f) readFile(f);
+});
+
+function handleFileSelect(input) {
+  if (input.files[0]) readFile(input.files[0]);
+}
+
+function readFile(f) {
+  document.getElementById('file-name').textContent = '📄 ' + f.name + ' (' + (f.size/1024).toFixed(1) + ' KB)';
+  const reader = new FileReader();
+  reader.onload = e => { fileContent = e.target.result; };
+  reader.readAsText(f);
+}
+
+// ─── Detection patterns ───────────────────────────
+const patterns = [
+  { name:'api_key',    regex:/(?:api[_-]?key|sk-[a-z])[=:\s]+[\w\-\.]{8,}/gi,  risk:'high',     label:'API Key' },
+  { name:'password',   regex:/(?:password|passwd|pwd)[=:\s]+\S+/gi,              risk:'critical', label:'Password' },
+  { name:'token',      regex:/(?:token|bearer|jwt)[=:\s]+[\w\.\-]{10,}/gi,       risk:'high',     label:'Token' },
+  { name:'email',      regex:/[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}/gi,      risk:'low',      label:'Email' },
+  { name:'phone',      regex:/\b(\+?\d[\d\s\-\(\)]{7,}\d)\b/g,                  risk:'low',      label:'Phone' },
+  { name:'secret',     regex:/(?:secret|private[_-]key)[=:\s]+\S+/gi,           risk:'critical', label:'Secret' },
+  { name:'stack_trace',regex:/(?:Exception|at \w+\.\w+\([\w\.]+:\d+\)|NullPointerException|StackTrace)/g, risk:'medium', label:'Stack Trace' },
+  { name:'ip',         regex:/\b(?:\d{1,3}\.){3}\d{1,3}\b/g,                   risk:'low',      label:'IP Address' },
+];
+
+const RISK_SCORES = { critical: 5, high: 3, medium: 2, low: 1 };
+const RISK_LEVELS = [
+  { max:  0, label:'Clean',    color:'var(--low)' },
+  { max:  3, label:'Low',      color:'var(--low)' },
+  { max:  7, label:'Medium',   color:'var(--medium)' },
+  { max: 12, label:'High',     color:'var(--high)' },
+  { max: 99, label:'Critical', color:'var(--critical)' },
+];
+
+function getRiskLevel(score) {
+  return RISK_LEVELS.find(l => score <= l.max) || RISK_LEVELS[RISK_LEVELS.length-1];
+}
+
+function detectAll(content) {
+  const findings = [];
+  const lines = content.split('\n');
+  lines.forEach((line, idx) => {
+    patterns.forEach(p => {
+      const matches = [...line.matchAll(new RegExp(p.regex.source, p.regex.flags.replace('g','g')))];
+      matches.forEach(m => {
+        findings.push({
+          type: p.label,
+          name: p.name,
+          risk: p.risk,
+          value: options.mask ? maskValue(m[0]) : m[0],
+          rawValue: m[0],
+          line: idx + 1,
+          lineContent: line,
+        });
+      });
+    });
+  });
+  return findings;
+}
+
+function maskValue(val) {
+  if (val.length <= 6) return '•'.repeat(val.length);
+  return val.slice(0,3) + '•'.repeat(Math.min(val.length-6, 12)) + val.slice(-3);
+}
+
+// ─── Generate insights ─────────────────────────────
+function generateInsights(findings, content) {
+  const insights = [];
+  const types = findings.map(f => f.name);
+  const riskCounts = { critical:0, high:0, medium:0, low:0 };
+  findings.forEach(f => riskCounts[f.risk]++);
+
+  if (types.includes('password')) insights.push({ icon:'🔴', text:'Plaintext credentials detected — passwords must never appear in logs or application data.' });
+  if (types.includes('api_key') || types.includes('token')) insights.push({ icon:'🟠', text:'API keys/tokens are exposed. These grant direct access to external services and must be rotated immediately.' });
+  if (types.includes('secret')) insights.push({ icon:'🔴', text:'Hardcoded secrets found — move all secrets to environment variables or a secrets vault.' });
+  if (types.includes('stack_trace')) insights.push({ icon:'🟡', text:'Stack traces reveal internal class structure — attackers can map your architecture from this information.' });
+  if (types.includes('email')) insights.push({ icon:'🟢', text:'Email addresses found in plaintext — ensure compliance with privacy regulations (GDPR/CCPA).' });
+  if (types.includes('ip')) insights.push({ icon:'🟢', text:'Internal IP addresses detected — may reveal network topology to unauthorized parties.' });
+
+  // Brute force heuristic
+  const errorLines = content.split('\n').filter(l => /failed|invalid|unauthorized|denied/i.test(l));
+  if (errorLines.length >= 3) insights.push({ icon:'🟠', text:`${errorLines.length} auth failure lines detected — potential brute-force or credential stuffing activity.` });
+
+  const debugLines = content.split('\n').filter(l => /DEBUG|VERBOSE|TRACE/i.test(l));
+  if (debugLines.length > 0) insights.push({ icon:'🟡', text:`Debug mode active (${debugLines.length} debug lines) — disable verbose logging in production.` });
+
+  if (findings.length === 0) insights.push({ icon:'✅', text:'No sensitive patterns detected. Content appears safe to process.' });
+
+  return insights;
+}
+
+// ─── Flow animation ────────────────────────────────
+const flowNodes = ['fn-input','fn-validate','fn-extract','fn-detect','fn-risk','fn-policy','fn-response'];
+let flowTimer = null;
+
+function runFlow(onDone) {
+  let i = 0;
+  flowNodes.forEach(id => { document.getElementById(id).className = 'flow-node'; });
+  if (flowTimer) clearInterval(flowTimer);
+  flowTimer = setInterval(() => {
+    if (i > 0) document.getElementById(flowNodes[i-1]).className = 'flow-node done';
+    if (i < flowNodes.length) {
+      document.getElementById(flowNodes[i]).className = 'flow-node active';
+      const labels = ['Receiving input...','Validating format...','Extracting content...','Running detection...','Scoring risk...','Applying policy...','Building response...'];
+      setStatus(labels[i], true);
+      i++;
+    } else {
+      clearInterval(flowTimer);
+      onDone();
+    }
+  }, 280);
+}
+
+function setStatus(msg, active=false) {
+  const el = document.getElementById('status-line');
+  el.textContent = msg;
+  el.className = 'status-line' + (active ? ' active' : '');
+}
+
+// ─── Main analyze function ─────────────────────────
+async function analyzeNow() {
+  // Gather content
+  let content = '';
+  if (currentMode === 'text' || currentMode === 'log') content = document.getElementById('text-input').value.trim();
+  else if (currentMode === 'sql') content = document.getElementById('sql-input').value.trim();
+  else if (currentMode === 'chat') content = document.getElementById('chat-input').value.trim();
+  else if (currentMode === 'file') content = fileContent;
+
+  if (!content) { setStatus('⚠ No content to analyze — please enter data first.'); return; }
+
+  // UI: loading state
+  const btn = document.getElementById('analyze-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="btn-shimmer"></span>⏳ Analyzing...';
+  document.getElementById('loading-bar').classList.add('running');
+
+  // Hide previous results
+  ['summary-card','findings-panel','insights-panel','log-viewer'].forEach(id => {
+    document.getElementById(id).classList.remove('visible');
+  });
+
+  // Run processing flow animation
+  runFlow(async () => {
+    document.getElementById('loading-bar').classList.remove('running');
+
+    // ── Detection (client-side regex engine) ──
+    const findings = detectAll(content);
+    const score = findings.reduce((acc, f) => acc + RISK_SCORES[f.risk], 0);
+    const riskLevel = getRiskLevel(score);
+
+    // Block if needed
+    if (options.block && score >= 12) {
+      setStatus('🚫 BLOCKED — high-risk content detected. Request denied by policy engine.');
+      btn.disabled = false;
+      btn.innerHTML = '<span class="btn-shimmer"></span>⚡ Analyze Now';
+      showRiskScore(score, riskLevel);
+      showFindings(findings);
+      return;
+    }
+
+    // ── Build summary ──
+    const typeNames = [...new Set(findings.map(f => f.type))];
+    const summary = findings.length === 0
+      ? 'Content analyzed successfully. No sensitive data or security risks detected. Input appears clean.'
+      : `Analysis complete. Detected ${findings.length} issue${findings.length>1?'s':''} across ${typeNames.join(', ')}. Risk level: ${riskLevel.label}.`;
+
+    // ── AI insights (using Anthropic API) ──
+    let aiInsights = generateInsights(findings, content);
+
+    if (options.ai_insights) {
+      setStatus('🤖 Fetching AI insights...', true);
+      try {
+        const prompt = `You are a security analysis AI. Analyze this content and findings, then return ONLY a JSON array of 3-4 short, specific security insight strings. Each string should be actionable and specific to the content. No markdown, no explanation — just the JSON array.
+
+Content (first 800 chars): ${content.slice(0,800)}
+
+Detected issues: ${JSON.stringify(findings.slice(0,6).map(f=>({type:f.type,risk:f.risk,line:f.line})))}
+
+Return format: ["insight 1", "insight 2", "insight 3"]`;
+
+        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1000,
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
+        const data = await resp.json();
+        const raw = data.content?.map(c=>c.text||'').join('');
+        if (raw) {
+          const clean = raw.replace(/```json|```/g,'').trim();
+          const parsed = JSON.parse(clean);
+          if (Array.isArray(parsed)) {
+            const icons = ['🔴','🟠','🟡','🔵','🟢'];
+            aiInsights = parsed.map((text,i) => ({ icon: icons[i%icons.length], text }));
+          }
+        }
+      } catch(e) {
+        // fallback to regex-generated insights already set
+      }
+    }
+
+    // ── Render everything ──
+    showRiskScore(score, riskLevel);
+    showSummary(summary, findings, content);
+    showFindings(findings);
+    showInsights(aiInsights);
+    if (currentMode === 'log' || findings.length > 0) showLogView(content, findings);
+
+    setStatus(`✓ Analysis complete — ${findings.length} finding${findings.length!==1?'s':''}, risk score ${score}, level: ${riskLevel.label}`);
+    btn.disabled = false;
+    btn.innerHTML = '<span class="btn-shimmer"></span>⚡ Analyze Now';
+  });
+}
+
+// ─── Render functions ─────────────────────────────
+
+function showRiskScore(score, level) {
+  document.getElementById('sidebar-score').textContent = score;
+  document.getElementById('sidebar-bar').style.width = Math.min(score/15*100, 100) + '%';
+  const el = document.getElementById('sidebar-level');
+  el.textContent = level.label;
+  el.style.color = level.color;
+}
+
+function showSummary(text, findings, content) {
+  document.getElementById('summary-text').textContent = text;
+  const rCounts = { critical:0, high:0, medium:0, low:0 };
+  findings.forEach(f => rCounts[f.risk]++);
+  const meta = document.getElementById('meta-row');
+  meta.innerHTML = [
+    `<span>Lines: ${content.split('\n').length}</span>`,
+    `<span>Chars: ${content.length}</span>`,
+    rCounts.critical ? `<span style="color:var(--critical)">Critical: ${rCounts.critical}</span>` : '',
+    rCounts.high ? `<span style="color:var(--high)">High: ${rCounts.high}</span>` : '',
+    rCounts.medium ? `<span style="color:var(--medium)">Medium: ${rCounts.medium}</span>` : '',
+    rCounts.low ? `<span style="color:var(--low)">Low: ${rCounts.low}</span>` : '',
+  ].filter(Boolean).join('<span style="color:var(--border)"> │ </span>');
+  document.getElementById('summary-card').classList.add('visible');
+}
+
+function showFindings(findings) {
+  const list = document.getElementById('findings-list');
+  list.innerHTML = '';
+  document.getElementById('finding-count').textContent = findings.length + ' issue' + (findings.length!==1?'s':'');
+  if (findings.length === 0) {
+    list.innerHTML = '<div class="finding-item" style="color:var(--low)">✓ No sensitive patterns detected</div>';
+  } else {
+    findings.forEach((f, i) => {
+      const row = document.createElement('div');
+      row.className = 'finding-item';
+      row.style.animationDelay = (i*0.05)+'s';
+      row.innerHTML = `
+        <span class="finding-type">${f.type}</span>
+        <span class="finding-value" title="${f.rawValue}">${f.value}</span>
+        <span class="finding-line">L${f.line}</span>
+        <span class="risk-pill ${f.risk}">${f.risk}</span>
+      `;
+      list.appendChild(row);
+    });
+  }
+  document.getElementById('findings-panel').classList.add('visible');
+}
+
+function showInsights(insights) {
+  const list = document.getElementById('insights-list');
+  list.innerHTML = '';
+  insights.forEach((ins, i) => {
+    const el = document.createElement('div');
+    el.className = 'insight-item';
+    el.style.animationDelay = (i*0.07)+'s';
+    el.innerHTML = `<span class="insight-icon">${ins.icon}</span><span>${ins.text}</span>`;
+    list.appendChild(el);
+  });
+  document.getElementById('insights-panel').classList.add('visible');
+}
+
+function showLogView(content, findings) {
+  const container = document.getElementById('log-lines');
+  container.innerHTML = '';
+  const lineFindings = {};
+  findings.forEach(f => {
+    if (!lineFindings[f.line]) lineFindings[f.line] = [];
+    lineFindings[f.line].push(f);
+  });
+
+  const lines = content.split('\n');
+  lines.forEach((line, idx) => {
+    const lineNum = idx + 1;
+    const lf = lineFindings[lineNum] || [];
+    const topRisk = lf.reduce((best, f) => {
+      const order = ['critical','high','medium','low'];
+      return order.indexOf(f.risk) < order.indexOf(best) ? f.risk : best;
+    }, 'none');
+
+    const row = document.createElement('div');
+    row.className = 'log-line' + (topRisk !== 'none' ? ' flagged-'+topRisk : '');
+
+    let displayLine = escapeHtml(line);
+    // Highlight matches
+    if (lf.length > 0) {
+      lf.forEach(f => {
+        const cls = f.risk === 'critical' || f.risk === 'high' ? 'secret' : f.name === 'email' ? 'email' : 'sensitive';
+        const escaped = escapeHtml(f.rawValue);
+        displayLine = displayLine.replace(escaped, `<mark class="${cls}">${escaped}</mark>`);
+      });
+    }
+
+    row.innerHTML = `<div class="log-line-num">${lineNum}</div><div class="log-line-content">${displayLine}</div>`;
+    container.appendChild(row);
+  });
+
+  document.getElementById('log-viewer').classList.add('visible');
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

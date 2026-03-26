@@ -1,0 +1,20 @@
+===== LIVE CHAT SAMPLES =====
+Copy any one of these into the Live Chat input field:
+==============================================
+
+-- SAMPLE 1: Account Support (credentials leak) --
+Hi, I can't log in. My username is admin@company.com and password is Admin@123. My API key sk-prod-xK9mN2pQrT can you help reset?
+
+-- SAMPLE 2: Developer asking for help --
+My stripe key is sk-live-51H8JqKLmN3oPqRsTuVwXyZ and it stopped working. Also my email john@gmail.com isn't receiving webhooks.
+
+-- SAMPLE 3: Password reset flow --
+Please reset my account. Email: alice@example.com, current password=OldPass@99, new password=NewPass@2026!
+
+-- SAMPLE 4: Config share --
+Can you check this config? db_password=Prod@SQL#2026 host=192.168.1.45 api_key=ghp_aBcDeFgHiJkLmNoPqRs
+
+-- SAMPLE 5: Clean chat (no risk) --
+Hello, can you tell me what features are available on the platform? I am new here and want to explore the dashboard.
+
+==============================================

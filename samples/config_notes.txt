@@ -1,0 +1,43 @@
+========================================
+  DEVELOPER NOTES — Internal Config
+  Author: DevOps Team | Date: 2026-03-10
+========================================
+
+== DATABASE CONFIG ==
+Host:     db.internal.corp.com
+Port:     5432
+User:     postgres
+Password: Prod@DBPass#99
+DB Name:  production_db
+
+== API KEYS ==
+Stripe Live Key:   sk-live-51H8JqKLmN3oPqRsTuVwXyZ0123456789
+OpenAI API Key:    sk-proj-aBcDeFgHiJkLmNoPqRsTuVwXyZ01234567
+GitHub Token:      ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ012345
+SendGrid Key:      SG.aBcDeFgHiJkLmNoPqRsT.UvWxYz01234567890
+
+== SMTP CONFIG ==
+Host:       smtp.company.com
+Port:       587
+Username:   noreply@company.com
+Password:   EmailSMTP@2026!
+
+== TEAM CONTACTS ==
+Lead Dev:   alice@company.com     | +91-98765-43210
+DevOps:     bob@company.com       | +1-800-555-0101
+Support:    support@company.com   | +44-7700-900456
+
+== AWS CREDENTIALS ==
+Access Key ID:     AKIAIOSFODNN7EXAMPLE
+Secret Access Key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Region:            ap-south-1
+
+== NOTES ==
+- DO NOT commit this file to Git
+- Rotate all keys after hackathon demo
+- JWT_SECRET = super_jwt_secret_do_not_share_2026
+- Admin panel password: AdminPanel@Secure#1
+
+========================================
+  END OF NOTES
+========================================

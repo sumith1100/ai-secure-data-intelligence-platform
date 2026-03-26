@@ -1,0 +1,42 @@
+========================================
+  APP SERVER LOG — PRODUCTION
+  Date: 2026-03-10 | Service: auth-api
+========================================
+
+2026-03-10 08:00:01 INFO  [startup] Application started on 192.168.1.45:8080
+2026-03-10 08:00:02 INFO  [startup] Database connected to db.internal.corp.com
+2026-03-10 08:00:03 DEBUG [config]  Loading config: db_password=Prod@DBPass#99
+2026-03-10 08:00:04 DEBUG [config]  stripe_secret=sk-live-xK9mN2pQrT8vWjYuZ012
+2026-03-10 08:00:05 DEBUG [config]  openai_api_key=sk-prod-aBcDeFgHiJkLmNoPqRsT
+
+2026-03-10 08:01:10 INFO  [auth] Login request received for admin@company.com
+2026-03-10 08:01:11 DEBUG [auth] Checking password=Admin@Secure123 for user admin
+2026-03-10 08:01:12 INFO  [auth] Token issued: bearer=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiJ9.xyz
+2026-03-10 08:01:13 INFO  [auth] Session started for user 192.168.10.22
+
+2026-03-10 08:15:44 WARN  [auth] Failed login for john.doe@gmail.com from 203.0.113.55
+2026-03-10 08:15:47 WARN  [auth] Failed login for john.doe@gmail.com from 203.0.113.55
+2026-03-10 08:15:50 WARN  [auth] Failed login for john.doe@gmail.com from 203.0.113.55
+2026-03-10 08:15:53 WARN  [auth] Failed login for john.doe@gmail.com from 203.0.113.55
+2026-03-10 08:15:56 WARN  [auth] Failed login for john.doe@gmail.com from 203.0.113.55
+2026-03-10 08:16:00 ERROR [auth] ACCOUNT LOCKED after 5 failed attempts — possible brute force
+
+2026-03-10 09:03:22 ERROR [api]  NullPointerException at UserService.java:142
+2026-03-10 09:03:22 ERROR [api]    at AuthController.login(AuthController.java:87)
+2026-03-10 09:03:22 ERROR [api]    at RequestDispatcher.dispatch(RequestDispatcher.java:34)
+2026-03-10 09:03:22 ERROR [api]  Caused by: java.lang.NullPointerException: user object is null
+
+2026-03-10 09:30:01 INFO  [payment] Processing payment for customer@example.com
+2026-03-10 09:30:02 DEBUG [payment] Using api_key=pk_live_51H8JqKLmN3oPqRsTuVwXyZ
+2026-03-10 09:30:03 DEBUG [payment] Webhook secret=whsec_aBcDeFgHiJkLmNoPqRsTuVw
+
+2026-03-10 10:05:33 DEBUG [github] token=ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ01234
+2026-03-10 10:06:00 INFO  [support] Contact: +91-98765-43210 | backup: +1-800-555-0199
+2026-03-10 10:07:15 DEBUG [smtp]   smtp_password=EmailPass@2026 host=mail.corp.com
+2026-03-10 10:08:44 INFO  [user]   New signup: alice@newdomain.org phone=+44-7700-900123
+
+2026-03-10 11:00:00 INFO  [health] System healthy — uptime 3h
+2026-03-10 11:30:00 INFO  [backup] Backup completed to 10.0.0.100
+========================================
+  END OF LOG
+========================================
